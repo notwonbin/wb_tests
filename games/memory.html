@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memory — Playroom</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .board {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      width: min(360px, 100%);
+    }
+    .mcard { aspect-ratio: 3/4; perspective: 700px; cursor: pointer; }
+    .inner {
+      position: relative; width: 100%; height: 100%;
+      transition: transform .45s cubic-bezier(.2,.7,.2,1); transform-style: preserve-3d;
+    }
+    .mcard.open .inner, .mcard.done .inner { transform: rotateY(180deg); }
+    .face {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      border-radius: 5px; display: grid; place-items: center;
+      box-shadow: 0 12px 24px -14px rgba(0,0,0,.3);
+    }
+    .front {
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.12) 0 4px, transparent 4px 8px),
+        linear-gradient(135deg, #b3a2f2, #8b6cf6);
+    }
+    .back-face { background: #fff; transform: rotateY(180deg); }
+    .mcard.done .back-face { opacity: .45; }
+    .shape { width: 42%; aspect-ratio: 1; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="bar"><a href="../index.html">← Playroom</a><span class="muted">Puzzle</span></nav>
+
+    <section class="stage-tile">
+      <div class="center">
+        <div class="board" id="board"></div>
+        <button class="pill" id="reset">Shuffle</button>
+        <p class="hint">두 장씩 뒤집어 같은 모양을 찾으세요 · 적은 시도가 좋은 기록</p>
+      </div>
+    </section>
+
+    <div class="game-info">
+      <div><p class="sub">Playroom · Puzzle</p><p class="name">Memory, 16 Cards</p></div>
+      <div class="stats"><span>Tries<b id="tries">0</b></span><span>Pairs<b id="pairs">0</b>/8</span><span>Best<b id="best">–</b></span></div>
+    </div>
+  </main>
+
+  <script src="../js/score.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    // 이모지 대신 미니멀 도형 8종
+    const SHAPES = [
+      '<circle cx="50" cy="50" r="46" fill="#ff5a1f"/>',
+      '<rect x="6" y="6" width="88" height="88" rx="6" fill="#161616"/>',
+      '<path d="M50 4 96 92H4z" fill="#2f5d3a"/>',
+      '<circle cx="50" cy="50" r="40" fill="none" stroke="#8b6cf6" stroke-width="14"/>',
+      '<rect x="4" y="34" width="92" height="32" rx="16" fill="#c9a77c"/>',
+      '<path d="M50 2 98 50 50 98 2 50z" fill="#3a7bd5"/>',
+      '<path d="M4 50a46 46 0 0 1 92 0z" fill="#e5b400"/>',
+      '<path d="M38 4h24v34h34v24H62v34H38V62H4V38h34z" fill="#d6455d"/>'
+    ];
+    const showBest = () => { $('best').textContent = Score.get('memory') || '–'; };
+    showBest();
+
+    let first, lock, tries, pairs;
+
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+      return a;
+    }
+    function build() {
+      first = null; lock = false; tries = 0; pairs = 0;
+      $('tries').textContent = 0; $('pairs').textContent = 0;
+      const board = $('board'); board.innerHTML = '';
+      shuffle([...SHAPES.keys(), ...SHAPES.keys()]).forEach(i => {
+        const c = document.createElement('div');
+        c.className = 'mcard'; c.dataset.id = i;
+        c.innerHTML = `<div class="inner"><div class="face front"></div><div class="face back-face"><svg class="shape" viewBox="0 0 100 100">${SHAPES[i]}</svg></div></div>`;
+        c.addEventListener('click', () => flip(c));
+        board.appendChild(c);
+      });
+    }
+    function flip(c) {
+      if (lock || c === first || c.classList.contains('done')) return;
+      c.classList.add('open');
+      if (!first) { first = c; return; }
+      tries++; $('tries').textContent = tries;
+      if (first.dataset.id === c.dataset.id) {
+        first.classList.add('done'); c.classList.add('done');
+        first = null; pairs++; $('pairs').textContent = pairs;
+        if (pairs === SHAPES.length) {
+          Score.submitLow('memory', tries); showBest();
+          $('reset').textContent = `${tries} tries · Again`;
+        }
+      } else {
+        lock = true;
+        const a = first; first = null;
+        setTimeout(() => { a.classList.remove('open'); c.classList.remove('open'); lock = false; }, 750);
+      }
+    }
+    $('reset').addEventListener('click', () => { $('reset').textContent = 'Shuffle'; build(); });
+    build();
+  </script>
+</body>
+</html>

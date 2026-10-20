@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playroom — Fewer, better games.</title>
+  <meta name="description" content="잘 만든 작은 게임만 모았습니다. 설치 없이 브라우저에서.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page">
+    <div class="grid">
+
+      <!-- 사이드 정보 -->
+      <aside class="intro">
+        <div class="cols">
+          <div>
+            <p class="label">Categories</p>
+            <ul>
+              <li><button class="filter on" data-f="all">All</button></li>
+              <li><button class="filter" data-f="action">Action</button></li>
+              <li><button class="filter" data-f="arcade">Arcade</button></li>
+              <li><button class="filter" data-f="reflex">Reflex</button></li>
+              <li><button class="filter" data-f="puzzle">Puzzle</button></li>
+            </ul>
+          </div>
+          <div>
+            <p class="label">Controls</p>
+            <ul>
+              <li>Keyboard</li>
+              <li>Mouse</li>
+              <li>Touch</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="#161616" d="M12 0l2.6 7.2L22 5l-4.8 6 4.8 6-7.4-2.2L12 24l-2.6-9.2L2 17l4.8-6L2 5l7.4 2.2z"/></svg>
+          <p class="tagline"><em>Fewer, better games.</em><br>잘 만든 작은 게임만 모았습니다.<br>설치 없이, 브라우저에서 바로.</p>
+          <p class="fine">© 2026 Playroom · GitHub + Vercel practice<br>Best scores are saved on this device.</p>
+        </div>
+      </aside>
+
+      <!-- Snake -->
+      <a class="tile" href="games/snake.html" data-cat="action">
+        <span class="badge"><i></i>Staff Pick</span>
+        <div class="obj">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="sn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f8a63"/><stop offset="1" stop-color="#2f5d3a"/></linearGradient>
+              <radialGradient id="sh1"><stop offset="0" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="100" cy="168" rx="70" ry="9" fill="url(#sh1)"/>
+            <path d="M40 150 C40 110, 90 120, 90 90 S 60 50, 100 40 S 160 60, 150 100" fill="none" stroke="url(#sn)" stroke-width="22" stroke-linecap="round"/>
+            <path d="M40 150 C40 110, 90 120, 90 90 S 60 50, 100 40 S 160 60, 150 100" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="5" stroke-linecap="round" transform="translate(-4 -4)"/>
+            <circle cx="150" cy="104" r="3" fill="#161616"/>
+            <circle cx="62" cy="160" r="7" fill="#ff5a1f"/>
+          </svg>
+        </div>
+        <div class="info">
+          <div><p class="sub">Playroom · Action</p><p class="name">Snake</p></div>
+          <span class="val">Best <b data-best="snake">0</b></span>
+        </div>
+      </a>
+
+      <!-- Breakout -->
+      <a class="tile" href="games/breakout.html" data-cat="arcade">
+        <div class="obj">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a45"/><stop offset="1" stop-color="#e5481a"/></linearGradient>
+              <linearGradient id="b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4efe6"/><stop offset="1" stop-color="#ddd5c6"/></linearGradient>
+              <linearGradient id="b3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfcfd4"/><stop offset="1" stop-color="#a9a9b0"/></linearGradient>
+              <radialGradient id="sh2"><stop offset="0" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="100" cy="170" rx="72" ry="8" fill="url(#sh2)"/>
+            <rect x="34" y="128" width="64" height="36" rx="4" fill="url(#b3)"/>
+            <rect x="102" y="128" width="64" height="36" rx="4" fill="url(#b2)"/>
+            <rect x="68" y="88" width="64" height="36" rx="4" fill="url(#b1)"/>
+            <rect x="34" y="88" width="30" height="36" rx="4" fill="url(#b2)"/>
+            <rect x="136" y="88" width="30" height="36" rx="4" fill="url(#b3)"/>
+            <rect x="85" y="48" width="64" height="36" rx="4" fill="url(#b2)"/>
+            <circle cx="62" cy="58" r="9" fill="#161616"/>
+            <circle cx="59" cy="55" r="3" fill="#fff" opacity=".35"/>
+          </svg>
+        </div>
+        <div class="info">
+          <div><p class="sub">Playroom · Arcade</p><p class="name">Breakout</p></div>
+          <span class="val">Best <b data-best="breakout">0</b></span>
+        </div>
+      </a>
+
+      <!-- Mole -->
+      <a class="tile" href="games/mole.html" data-cat="reflex">
+        <div class="obj">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="m1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e9e3d8"/><stop offset=".55" stop-color="#fbf8f2"/><stop offset="1" stop-color="#d6cdbd"/></linearGradient>
+              <linearGradient id="m2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a5a43"/><stop offset=".5" stop-color="#9b7559"/><stop offset="1" stop-color="#5e432f"/></linearGradient>
+              <radialGradient id="sh3"><stop offset="0" stop-color="#000" stop-opacity=".2"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="100" cy="168" rx="62" ry="9" fill="url(#sh3)"/>
+            <path d="M54 110 h92 v52 a46 9 0 0 1 -92 0z" fill="url(#m1)"/>
+            <ellipse cx="100" cy="110" rx="46" ry="9" fill="#2a2420"/>
+            <path d="M68 110 v-34 a32 32 0 0 1 64 0 v34z" fill="url(#m2)"/>
+            <circle cx="88" cy="74" r="3" fill="#161616"/>
+            <circle cx="112" cy="74" r="3" fill="#161616"/>
+            <ellipse cx="100" cy="86" rx="7" ry="5" fill="#ff8a8a"/>
+          </svg>
+        </div>
+        <div class="info">
+          <div><p class="sub">Playroom · Reflex</p><p class="name">Whack-a-Mole, 30s</p></div>
+          <span class="val">Best <b data-best="mole">0</b></span>
+        </div>
+      </a>
+
+      <!-- Memory -->
+      <a class="tile" href="games/memory.html" data-cat="puzzle">
+        <div class="obj">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <defs>
+              <linearGradient id="c1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b3a2f2"/><stop offset="1" stop-color="#8b6cf6"/></linearGradient>
+              <pattern id="cp" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="8" fill="#fff" opacity=".12"/></pattern>
+              <radialGradient id="sh4"><stop offset="0" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="100" cy="168" rx="66" ry="8" fill="url(#sh4)"/>
+            <g transform="rotate(-10 80 105)">
+              <rect x="44" y="44" width="72" height="104" rx="6" fill="url(#c1)"/>
+              <rect x="44" y="44" width="72" height="104" rx="6" fill="url(#cp)"/>
+            </g>
+            <g transform="rotate(8 125 105)">
+              <rect x="88" y="50" width="72" height="104" rx="6" fill="#fdfdfd"/>
+              <rect x="88" y="50" width="72" height="104" rx="6" fill="none" stroke="#e2e2e6"/>
+              <circle cx="124" cy="102" r="14" fill="#ff5a1f"/>
+            </g>
+          </svg>
+        </div>
+        <div class="info">
+          <div><p class="sub">Playroom · Puzzle</p><p class="name">Memory, 16 Cards</p></div>
+          <span class="val">Min <b data-best="memory">–</b></span>
+        </div>
+      </a>
+
+      <!-- Coming soon -->
+      <div class="tile soon" data-cat="soon">
+        <div class="obj">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <rect x="50" y="50" width="100" height="100" rx="6" fill="none" stroke="#c7c7cd" stroke-dasharray="4 5"/>
+            <path d="M100 86v28M86 100h28" stroke="#a5a5ab" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="info">
+          <div><p class="sub">Next drop</p><p class="name">Your game here</p></div>
+          <span class="val">Soon</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/score.js"></script>
+  <script>
+    document.querySelectorAll('[data-best]').forEach(el => {
+      const v = Score.get(el.dataset.best);
+      if (v) el.textContent = v;
+    });
+
+    // 카테고리 필터
+    const filters = document.querySelectorAll('.filter');
+    filters.forEach(btn => btn.addEventListener('click', () => {
+      filters.forEach(b => b.classList.toggle('on', b === btn));
+      const f = btn.dataset.f;
+      document.querySelectorAll('.tile').forEach(t => {
+        t.classList.toggle('hidden', f !== 'all' && t.dataset.cat !== f);
+      });
+    }));
+  </script>
+</body>
+</html>

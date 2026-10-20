@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Whack-a-Mole — Playroom</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .field {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+      width: min(420px, 100%);
+    }
+    .hole {
+      aspect-ratio: 1; position: relative; overflow: hidden; cursor: pointer;
+      user-select: none; -webkit-tap-highlight-color: transparent;
+    }
+    /* 구멍 (원통 윗면) */
+    .hole::after {
+      content: ''; position: absolute; left: 6%; right: 6%; bottom: 8%; height: 22%;
+      border-radius: 50%; background: #2a2420;
+      box-shadow: 0 6px 0 #e9e3d8, 0 14px 18px -6px rgba(0,0,0,.18);
+    }
+    .win { position: absolute; left: 0; right: 0; top: 0; bottom: 19%; overflow: hidden; z-index: 1; }
+    .mole {
+      position: absolute; left: 22%; right: 22%; bottom: -6%; height: 72%;
+      border-radius: 50% 50% 8px 8px / 60% 60% 8px 8px;
+      background: linear-gradient(90deg, #6d4f3a, #9b7559 50%, #5e432f);
+      transform: translateY(110%); transition: transform .14s cubic-bezier(.2,.8,.2,1);
+    }
+    .mole::before, .mole::after {
+      content: ''; position: absolute; top: 34%; width: 9%; aspect-ratio: 1;
+      border-radius: 50%; background: #161616;
+    }
+    .mole::before { left: 30%; } .mole::after { right: 30%; }
+    .mole .nose { position: absolute; top: 50%; left: 50%; width: 18%; aspect-ratio: 1.4; transform: translateX(-50%); background: #ff8a8a; border-radius: 50%; }
+    .hole[data-type="bomb"] .mole { background: linear-gradient(90deg, #111, #333 50%, #000); border-radius: 50%; height: 50%; }
+    .hole[data-type="bomb"] .mole::before, .hole[data-type="bomb"] .mole::after { display: none; }
+    .hole[data-type="bomb"] .mole .nose { top: -14%; width: 10%; aspect-ratio: .5; background: #ff5a1f; border-radius: 2px; }
+    .hole.up .mole { transform: translateY(0); }
+    .hole.hit .mole { filter: brightness(1.6) saturate(0); }
+    .hole::after { z-index: 0; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="bar"><a href="../index.html">← Playroom</a><span class="muted">Reflex</span></nav>
+
+    <section class="stage-tile">
+      <div class="center">
+        <div class="field" id="field"></div>
+        <button class="pill" id="start">Start</button>
+        <p class="hint">튀어나온 두더지를 클릭하세요 · 검은 폭탄은 −20</p>
+      </div>
+    </section>
+
+    <div class="game-info">
+      <div><p class="sub">Playroom · Reflex</p><p class="name">Whack-a-Mole, 30s</p></div>
+      <div class="stats"><span>Score<b id="score">0</b></span><span>Time<b id="time">30</b></span><span>Best<b id="best">0</b></span></div>
+    </div>
+  </main>
+
+  <script src="../js/score.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const field = $('field');
+    $('best').textContent = Score.get('mole');
+
+    const holes = [];
+    for (let i = 0; i < 9; i++) {
+      const h = document.createElement('div');
+      h.className = 'hole';
+      h.innerHTML = '<div class="win"><div class="mole"><span class="nose"></span></div></div>';
+      h.addEventListener('pointerdown', () => whack(h));
+      field.appendChild(h); holes.push(h);
+    }
+
+    let score = 0, time = 30, playing = false, clock, spawner;
+
+    function start() {
+      score = 0; time = 30; playing = true;
+      $('score').textContent = 0; $('time').textContent = 30;
+      $('start').disabled = true; $('start').textContent = 'Playing';
+      clock = setInterval(() => {
+        time--; $('time').textContent = time;
+        if (time <= 0) stop();
+      }, 1000);
+      spawn();
+    }
+    function spawn() {
+      if (!playing) return;
+      const free = holes.filter(h => !h.classList.contains('up'));
+      if (free.length) {
+        const h = free[Math.floor(Math.random() * free.length)];
+        h.dataset.type = Math.random() < 0.15 ? 'bomb' : 'mole';
+        h.classList.remove('hit'); h.classList.add('up');
+        const stay = Math.max(450, 1000 - (30 - time) * 18);
+        setTimeout(() => h.classList.remove('up'), stay);
+      }
+      spawner = setTimeout(spawn, Math.max(300, 750 - (30 - time) * 12));
+    }
+    function whack(h) {
+      if (!playing || !h.classList.contains('up') || h.classList.contains('hit')) return;
+      h.classList.add('hit');
+      score += h.dataset.type === 'bomb' ? -20 : 10;
+      $('score').textContent = score;
+      setTimeout(() => h.classList.remove('up'), 120);
+    }
+    function stop() {
+      playing = false;
+      clearInterval(clock); clearTimeout(spawner);
+      holes.forEach(h => h.classList.remove('up'));
+      if (Score.submitHigh('mole', score)) $('best').textContent = score;
+      $('start').disabled = false; $('start').textContent = `Score ${score} · Retry`;
+    }
+    $('start').addEventListener('click', start);
+  </script>
+</body>
+</html>

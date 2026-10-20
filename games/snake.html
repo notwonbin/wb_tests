@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake — Playroom</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <main class="page">
+    <nav class="bar"><a href="../index.html">← Playroom</a><span class="muted">Action</span></nav>
+
+    <section class="stage-tile">
+      <div class="center">
+        <canvas id="c" width="440" height="440"></canvas>
+        <div class="pad">
+          <span></span><button data-d="up">↑</button><span></span>
+          <button data-d="left">←</button><button data-d="down">↓</button><button data-d="right">→</button>
+        </div>
+        <p class="hint">방향키 · WASD로 이동 / Space로 시작</p>
+      </div>
+    </section>
+
+    <div class="game-info">
+      <div><p class="sub">Playroom · Action</p><p class="name">Snake</p></div>
+      <div class="stats"><span>Score<b id="score">0</b></span><span>Best<b id="best">0</b></span></div>
+    </div>
+  </main>
+
+  <script src="../js/score.js"></script>
+  <script>
+    const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+    const N = 20, S = cv.width / N;
+    const scoreEl = document.getElementById('score'), bestEl = document.getElementById('best');
+    bestEl.textContent = Score.get('snake');
+
+    const C = { bg: '#fafafa', dot: '#e6e6ea', body: '#2f5d3a', head: '#161616', food: '#ff5a1f', ink: '#161616', muted: '#8d8d93' };
+    const FONT = '"Pretendard", -apple-system, sans-serif';
+
+    let snake, dir, next, food, score, running, over, timer;
+    const DIRS = { up: [0,-1], down: [0,1], left: [-1,0], right: [1,0] };
+
+    function reset() {
+      snake = [{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+      dir = next = DIRS.right;
+      score = 0; scoreEl.textContent = 0;
+      over = false;
+      placeFood();
+    }
+    function placeFood() {
+      do { food = { x: Math.floor(Math.random()*N), y: Math.floor(Math.random()*N) }; }
+      while (snake.some(p => p.x === food.x && p.y === food.y));
+    }
+    function setDir(d) {
+      const nd = DIRS[d];
+      if (nd[0] === -dir[0] && nd[1] === -dir[1]) return;
+      next = nd;
+      if (!running) start();
+    }
+    function start() {
+      if (over || !snake) reset();
+      running = true;
+      clearInterval(timer);
+      timer = setInterval(tick, 110);
+    }
+    function tick() {
+      dir = next;
+      const head = { x: snake[0].x + dir[0], y: snake[0].y + dir[1] };
+      if (head.x < 0 || head.y < 0 || head.x >= N || head.y >= N ||
+          snake.some(p => p.x === head.x && p.y === head.y)) return gameOver();
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        score += 10; scoreEl.textContent = score; placeFood();
+      } else snake.pop();
+      draw();
+    }
+    function gameOver() {
+      clearInterval(timer); running = false; over = true;
+      if (Score.submitHigh('snake', score)) bestEl.textContent = score;
+      draw();
+      overlay('Game over', `Score ${score} — Space to retry`);
+    }
+    function overlay(title, sub) {
+      ctx.fillStyle = 'rgba(250,250,250,.88)'; ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = C.ink; ctx.font = `500 22px ${FONT}`; ctx.fillText(title, cv.width/2, cv.height/2 - 4);
+      ctx.fillStyle = C.muted; ctx.font = `400 12px ${FONT}`; ctx.fillText(sub, cv.width/2, cv.height/2 + 22);
+    }
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill();
+    }
+    function draw() {
+      ctx.fillStyle = C.bg; ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.fillStyle = C.dot;
+      for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+        ctx.beginPath(); ctx.arc(i*S + S/2, j*S + S/2, 1.2, 0, Math.PI*2); ctx.fill();
+      }
+      ctx.fillStyle = C.food;
+      ctx.beginPath(); ctx.arc(food.x*S + S/2, food.y*S + S/2, S/2 - 4, 0, Math.PI*2); ctx.fill();
+      snake.forEach((p, i) => {
+        ctx.fillStyle = i === 0 ? C.head : C.body;
+        roundRect(p.x*S + 2, p.y*S + 2, S - 4, S - 4, 6);
+      });
+    }
+
+    document.addEventListener('keydown', e => {
+      const map = { ArrowUp:'up', ArrowDown:'down', ArrowLeft:'left', ArrowRight:'right', w:'up', s:'down', a:'left', d:'right' };
+      if (map[e.key]) { e.preventDefault(); setDir(map[e.key]); }
+      if (e.code === 'Space') { e.preventDefault(); if (!running) start(); }
+    });
+    document.querySelectorAll('.pad button').forEach(b => b.addEventListener('click', () => setDir(b.dataset.d)));
+    cv.addEventListener('click', () => { if (!running) start(); });
+
+    reset(); draw();
+    document.fonts.ready.then(() => { draw(); overlay('Snake', 'Press Space or tap to start'); });
+  </script>
+</body>
+</html>
